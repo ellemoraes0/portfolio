@@ -9,7 +9,7 @@ import { TbBrandAdobeIndesign } from "react-icons/tb";
 import { TbBrandAdobePremiere } from "react-icons/tb";
 import polaroid from '../../imagens/polaroid.png';
 
-export default function AboutMe() {
+export default function AboutMe({ aboutMe }) {
 
     const sectionRef = useRef(null);
     const bgRef = useRef(null);
@@ -112,7 +112,7 @@ export default function AboutMe() {
                                 stiffness: 150,
                                 damping: 10,
                                 delay: 0.6, // Added delay for the first element
-                            }}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum numquam pariatur, eos nisi fugiat nobis nulla reiciendis libero assumenda deleniti veniam reprehenderit vero et odit, sed quia distinctio. Recusandae, explicabo.</motion.p>
+                            }}>{aboutMe?.description}</motion.p>
                     </div>
                     <div>
                         <motion.h5 initial={isDesktop ? { opacity: 0, y: 100 } : { opacity: 0, y: 24 }}
@@ -123,7 +123,7 @@ export default function AboutMe() {
                                 stiffness: 150,
                                 damping: 10,
                                 delay: 0.6, // Added delay for the first element
-                            }} className="font-bold">Experiência</motion.h5>
+                            }} className="font-bold">Experiências</motion.h5>
                         <motion.p initial={isDesktop ? { opacity: 0, x: 100 } : { opacity: 0, y: 24 }}
                             whileInView={isDesktop ? { opacity: 1, x: 0 } : { opacity: 1, x: 0, y: 0, scale: 1 }}
                             viewport={isDesktop ? undefined : { once: true }}
@@ -132,7 +132,7 @@ export default function AboutMe() {
                                 stiffness: 150,
                                 damping: 10,
                                 delay: 0.6, // Added delay for the first element
-                            }}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, aperiam quam inventore commodi adipisci asperiores iste. Voluptates, fugit? Soluta a necessitatibus iure accusamus repudiandae saepe error quo dolores sit delectus.</motion.p>
+                            }}>{aboutMe?.experience}</motion.p>
                         <motion.h5 initial={isDesktop ? { opacity: 0, x: 100 } : { opacity: 0, y: 24 }}
                             whileInView={isDesktop ? { opacity: 1, x: 0 } : { opacity: 1, x: 0, y: 0, scale: 1 }}
                             viewport={isDesktop ? undefined : { once: true }}
@@ -150,7 +150,7 @@ export default function AboutMe() {
                                 stiffness: 150,
                                 damping: 10,
                                 delay: 0.5, // Added delay for the first element
-                            }}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus qui debitis, modi maiores officia numquam sit eveniet cupiditate tempore expedita placeat dolore facere neque a, cum praesentium vitae soluta temporibus.</motion.p>
+                            }}>{aboutMe?.education}</motion.p>
                     </div>
                     <div>
                         <motion.h5 initial={isDesktop ? { opacity: 0, x: 100 } : { opacity: 0, y: 24 }}
@@ -170,7 +170,7 @@ export default function AboutMe() {
                                 stiffness: 150,
                                 damping: 10,
                                 delay: 0.9, // Added delay for the first element
-                            }}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam inventore corporis modi rerum pariatur. Aperiam nisi, totam, facere ducimus quasi ipsam officia tempore doloremque temporibus corporis delectus expedita excepturi nobis.</motion.p>
+                            }}>{aboutMe?.languages}</motion.p>
                         <motion.h5 initial={isDesktop ? { scale: 0, y: 100 } : { opacity: 0, scale: 0.9 }}
                             whileInView={isDesktop ? { scale: 1, y: 0 } : { opacity: 1, x: 0, y: 0, scale: 1 }}
                             viewport={isDesktop ? undefined : { once: true }}

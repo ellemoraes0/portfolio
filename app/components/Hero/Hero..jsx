@@ -6,7 +6,7 @@ import Menu from '../../components/Menu/Menu';
 import { motion, AnimatePresence } from "motion/react"
 import { FiMenu, FiX } from 'react-icons/fi';
 
-export default function Hero() {
+export default function Hero({ hero }) {
     const sectionRef = useRef(null);
     const bgRef = useRef(null);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -81,7 +81,7 @@ export default function Hero() {
                                 stiffness: 150,
                                 damping: 10,
                                 delay: 0.4, // Added delay for the first element
-                            }}>Gabrielle Designer</motion.span>
+                            }}>{hero?.title}</motion.span>
                     <motion.ul
                         initial={{ opacity: 0, x: 100 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -140,9 +140,7 @@ export default function Hero() {
                                 damping: 10,
                                 delay: 0.4, // Added delay for the first element
                             }} className="text-[12px] font-light">
-                            <span className="font-bold">Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit.</span> Praesentium deleniti alias sint facilis non cupiditate dolorem debitis officiis consequatur qui,
-                            illum id ut dolorum quis voluptatibus necessitatibus atque sed assumenda? Praesentium deleniti alias sint facilis non cupiditate dolorem debitis officiis consequatur qui, illum id ut dolorum quis voluptatibus necessitatibus atque sed assumenda?
+                            <span className="font-bold">{hero?.description1}</span> {hero?.description2}
                         </motion.p>
                     </div>
                 </div>

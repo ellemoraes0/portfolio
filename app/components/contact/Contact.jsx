@@ -3,6 +3,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import imgContact from "../../imagens/polaroid.png";
 
+
 const contactInfo = {
     title: "Contato",
     subtitle: "Vamos trabalhar juntos",
@@ -18,7 +19,7 @@ const contactInfo = {
 
 const spring = { type: "spring", stiffness: 150, damping: 10 };
 
-export default function Contact() {
+export default function Contact({ contato }) {
     return (
         <section
             id="contato"
@@ -62,8 +63,10 @@ export default function Contact() {
                     className="mt-12 w-full max-w-[420px] md:mt-16"
                 >
                     <Image
-                        src={contactInfo.image}
-                        alt={contactInfo.name}
+                        src={contato?.image || contactInfo.image}
+                        alt={contato?.name || contactInfo.name}
+                        width={1200}
+                        height={1200}
                         className="h-auto w-full rounded-[6px]"
                     />
                 </motion.div>
@@ -99,24 +102,62 @@ export default function Contact() {
                     </motion.a>
 
                     <nav className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-                        {contactInfo.socials.map((social) => (
-                            <motion.a initial={{ scale: 0, y: 100 }}
+                        {contato?.link1 && (
+                            <motion.a
+                                initial={{ scale: 0, y: 100 }}
                                 whileInView={{ scale: 1, y: 0 }}
                                 transition={{
                                     type: "spring",
                                     stiffness: 150,
                                     damping: 10,
-                                    delay: 0.2, // Added delay for the first element
+                                    delay: 0.2,
                                 }}
-                                key={social.label}
-                                href={social.url}
+                                href={contato.link1}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="link-anim text-sm"
                             >
-                                {social.label}
+                                Instagram
                             </motion.a>
-                        ))}
+                        )}
+
+                        {contato?.link2 && (
+                            <motion.a
+                                initial={{ scale: 0, y: 100 }}
+                                whileInView={{ scale: 1, y: 0 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 150,
+                                    damping: 10,
+                                    delay: 0.2,
+                                }}
+                                href={contato.link2}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="link-anim text-sm"
+                            >
+                                Behance
+                            </motion.a>
+                        )}
+
+                        {contato?.link3 && (
+                            <motion.a
+                                initial={{ scale: 0, y: 100 }}
+                                whileInView={{ scale: 1, y: 0 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 150,
+                                    damping: 10,
+                                    delay: 0.2,
+                                }}
+                                href={contato.link3}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="link-anim text-sm"
+                            >
+                                LinkedIn
+                            </motion.a>
+                        )}
                     </nav>
                 </motion.div>
 
