@@ -62,6 +62,10 @@ export default function Carrossel({ portfolio }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const closeTimer = useRef(null);
+    const [flipProject, setFlipProject] = useState(null);
+    const [flipDirection, setFlipDirection] = useState("forward");
+    const [flipPhase, setFlipPhase] = useState("idle");
+    const flipTimer = useRef(null);
 
     useEffect(() => {
         const mq = window.matchMedia("(max-width: 768px)");
@@ -151,56 +155,6 @@ export default function Carrossel({ portfolio }) {
 
     }, [selectedProject]);
 
-    useEffect(() => {
-
-        if (!selectedProject) return undefined;
-
-        const onKeyDown = (event) => {
-
-            if (event.key !== "Escape") return;
-
-            if (showAll) {
-
-                setShowAll(false);
-
-            } else {
-
-                setIsClosing(true);
-
-                setIsExpanded(false);
-
-                closeTimer.current =
-                    setTimeout(() => {
-
-                        setSelectedProject(null);
-
-                        setIsClosing(false);
-
-                    }, 600);
-
-            }
-
-        };
-
-        window.addEventListener(
-            "keydown",
-            onKeyDown
-        );
-
-        return () =>
-            window.removeEventListener(
-                "keydown",
-                onKeyDown
-            );
-
-    }, [selectedProject, showAll]);
-
-    useEffect(
-        () => () =>
-            clearTimeout(closeTimer.current),
-        []
-    );
-
     const maxIndex = Math.max(
         0,
         projects.length - perView
@@ -249,11 +203,51 @@ export default function Carrossel({ portfolio }) {
 
     };
 
+    const flipToProject = (project, direction) => {
+        if (flipPhase !== "idle") return;
+        const nextIdx = projects.indexOf(project);
+        const currentIdx = projects.indexOf(selectedProject);
+        if (nextIdx === currentIdx) return;
+        const dir = direction || (nextIdx > currentIdx ? "forward" : "backward");
+        setFlipDirection(dir);
+        setFlipProject(project);
+        setFlipPhase("flipping-out");
+        clearTimeout(flipTimer.current);
+        flipTimer.current = setTimeout(() => {
+            setSelectedProject(project);
+            setFlipPhase("flipping-in");
+            flipTimer.current = setTimeout(() => {
+                setFlipPhase("idle");
+                setFlipProject(null);
+            }, 500);
+        }, 200);
+    };
+
+    const flipNext = () => {
+        if (flipPhase !== "idle" || !selectedProject) return;
+        const i = projects.indexOf(selectedProject);
+        const next = (i + 1) % projects.length;
+        flipToProject(projects[next], "forward");
+    };
+
+    const flipPrev = () => {
+        if (flipPhase !== "idle" || !selectedProject) return;
+        const i = projects.indexOf(selectedProject);
+        const prev = (i - 1 + projects.length) % projects.length;
+        flipToProject(projects[prev], "backward");
+    };
+
     const closeProject = () => {
 
         setIsClosing(true);
 
         setIsExpanded(false);
+
+        setFlipPhase("idle");
+
+        setFlipProject(null);
+
+        clearTimeout(flipTimer.current);
 
         closeTimer.current =
             setTimeout(() => {
@@ -265,6 +259,61 @@ export default function Carrossel({ portfolio }) {
             }, 600);
 
     };
+
+    useEffect(() => {
+
+        if (!selectedProject) return undefined;
+
+        const onKeyDown = (event) => {
+
+            if (event.key === "Escape") {
+                if (showAll) {
+                    setShowAll(false);
+                } else {
+                    setIsClosing(true);
+                    setIsExpanded(false);
+                    setFlipPhase("idle");
+                    setFlipProject(null);
+                    clearTimeout(flipTimer.current);
+                    closeTimer.current =
+                        setTimeout(() => {
+                            setSelectedProject(null);
+                            setIsClosing(false);
+                        }, 600);
+                }
+                return;
+            }
+
+            if (event.key === "ArrowRight") {
+                event.preventDefault();
+                flipNext();
+            }
+
+            if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                flipPrev();
+            }
+
+        };
+
+        window.addEventListener(
+            "keydown",
+            onKeyDown
+        );
+
+        return () =>
+            window.removeEventListener(
+                "keydown",
+                onKeyDown
+            );
+
+    }, [selectedProject, showAll, flipPhase]);
+
+    useEffect(
+        () => () =>
+            clearTimeout(closeTimer.current),
+        []
+    );
 
     const previewStyle =
         !originRect
@@ -461,13 +510,55 @@ export default function Carrossel({ portfolio }) {
                                 style={previewStyle}
                             >
 
-                                <Image
-                                    src={selectedProject.cover}
-                                    alt={selectedProject.title}
-                                    fill
-                                    sizes="100vw"
-                                    className="object-cover"
-                                />
+                                {flipPhase === "idle" ? (
+                                    <Image
+                                        src={selectedProject.cover}
+                                        alt={selectedProject.title}
+                                        fill
+                                        sizes="100vw"
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0" style={{ perspective: "1200px" }}>
+                                        <div
+                                            className="absolute inset-0 overflow-hidden rounded-[6px]"
+                                            style={{
+                                                transformOrigin: "left center",
+                                                backfaceVisibility: "hidden",
+                                                animation: "flipOut 0.5s ease-in forwards",
+                                            }}
+                                        >
+                                            <Image
+                                                src={selectedProject.cover}
+                                                alt={selectedProject.title}
+                                                fill
+                                                sizes="100vw"
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        <div
+                                            className="absolute inset-0 rounded-[6px]"
+                                            style={{
+                                                background: "linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.25) 40%, transparent 70%)",
+                                                animation: "flipShadow 0.5s ease-in-out",
+                                            }}
+                                        />
+                                        <div
+                                            className="absolute inset-0 overflow-hidden rounded-[6px]"
+                                            style={{
+                                                animation: "flipReveal 0.4s ease-out 0.1s both",
+                                            }}
+                                        >
+                                            <Image
+                                                src={flipProject.cover}
+                                                alt={flipProject.title}
+                                                fill
+                                                sizes="100vw"
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div
                                     className={`pointer-events-none absolute bottom-[18px] left-5 flex flex-col gap-0.5 opacity-0 [text-shadow:0_1px_10px_rgba(0,0,0,0.9)] [transition:opacity_0.4s_ease_0.4s] ${isExpanded
@@ -478,17 +569,38 @@ export default function Carrossel({ portfolio }) {
 
                                     <strong className="text-xl font-bold leading-[1.2] text-[#e4e746] max-md:text-lg">
 
-                                        {selectedProject.title}
+                                        {flipProject?.title || selectedProject.title}
 
                                     </strong>
 
                                     <span className="text-sm text-[#e4e746]/60">
 
-                                        {selectedProject.category}
+                                        {flipProject?.category || selectedProject.category}
 
                                     </span>
 
                                 </div>
+
+                                {projects.length > 1 && (
+                                    <>
+                                        <button
+                                            type="button"
+                                            className="absolute left-3 top-1/2 z-[3] flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/50 bg-black/50 text-white transition-[background-color,border-color] duration-200 hover:border-white hover:bg-black/85"
+                                            onClick={flipPrev}
+                                            aria-label="Projeto anterior"
+                                        >
+                                            <FiChevronLeft size={20} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="absolute right-3 top-1/2 z-[3] flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/50 bg-black/50 text-white transition-[background-color,border-color] duration-200 hover:border-white hover:bg-black/85"
+                                            onClick={flipNext}
+                                            aria-label="Próximo projeto"
+                                        >
+                                            <FiChevronRight size={20} />
+                                        </button>
+                                    </>
+                                )}
 
                             </div>
 

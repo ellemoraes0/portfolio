@@ -59,6 +59,36 @@ body {
     }
 }
 
+@keyframes flipOut {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(-105deg);
+    }
+}
+
+@keyframes flipShadow {
+    0% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes flipReveal {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 body {
     margin: 0;
     padding: 0;

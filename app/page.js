@@ -55,9 +55,7 @@ export default async function Home() {
     name,
     "image": image.asset->url,
     email,
-    link1,
-    link2,
-    link3
+    links
   }
 `);
   return (

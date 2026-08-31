@@ -102,8 +102,12 @@ export default function Contact({ contato }) {
                     </motion.a>
 
                     <nav className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-                        {contato?.link1 && (
+                        {(contato?.links?.length
+                            ? contato.links
+                            : contactInfo.socials
+                        ).map((link, i) => (
                             <motion.a
+                                key={link._key || link.label || i}
                                 initial={{ scale: 0, y: 100 }}
                                 whileInView={{ scale: 1, y: 0 }}
                                 transition={{
@@ -112,52 +116,14 @@ export default function Contact({ contato }) {
                                     damping: 10,
                                     delay: 0.2,
                                 }}
-                                href={contato.link1}
+                                href={link.url}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="link-anim text-sm"
                             >
-                                Instagram
+                                {link.label || link.url}
                             </motion.a>
-                        )}
-
-                        {contato?.link2 && (
-                            <motion.a
-                                initial={{ scale: 0, y: 100 }}
-                                whileInView={{ scale: 1, y: 0 }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 150,
-                                    damping: 10,
-                                    delay: 0.2,
-                                }}
-                                href={contato.link2}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="link-anim text-sm"
-                            >
-                                Behance
-                            </motion.a>
-                        )}
-
-                        {contato?.link3 && (
-                            <motion.a
-                                initial={{ scale: 0, y: 100 }}
-                                whileInView={{ scale: 1, y: 0 }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 150,
-                                    damping: 10,
-                                    delay: 0.2,
-                                }}
-                                href={contato.link3}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="link-anim text-sm"
-                            >
-                                LinkedIn
-                            </motion.a>
-                        )}
+                        ))}
                     </nav>
                 </motion.div>
 
