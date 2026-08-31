@@ -4,6 +4,8 @@ import Carrossel from './components/carrossel/Carrossel';
 import Contact from './components/contact/Contact';
 import { sanityClient } from './sanity';
 
+export const revalidate = 30
+
 export default async function Home() {
   const hero = await sanityClient.fetch(`
     *[_type == "hero"][0] {
